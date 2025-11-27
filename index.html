@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Тестовый сайт на GitHub Pages</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7dd3fc;
+      --text:#e6eef8;
+    }
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#071029 0%, var(--bg) 100%);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:2rem;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(125,211,252,0.08);
+      padding:2rem;
+      border-radius:16px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      max-width:720px;
+      width:100%;
+    }
+    h1{margin:0 0 .5rem 0; font-size:1.6rem;}
+    p{margin:.25rem 0;}
+    .buttons{margin-top:1rem; display:flex; gap:.5rem;}
+    button{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      padding:.6rem .9rem;
+      border-radius:10px;
+      color:var(--text);
+      cursor:pointer;
+    }
+    footer{margin-top:1.25rem; font-size:.85rem; opacity:.8;}
+    .logo{display:inline-block; vertical-align:middle; margin-right:.5rem; transform:translateY(2px);}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1><span class="logo">🚀</span>Тестовый сайт на GitHub Pages</h1>
+    <p>Это простой пример страницы. Чтобы опубликовать — положите этот файл в корень репозитория и включите GitHub Pages.</p>
+
+    <p><strong>Что внутри:</strong></p>
+    <ul>
+      <li>HTML + встроенный CSS для стиля</li>
+      <li>Небольшой JavaScript для взаимодействия</li>
+    </ul>
+
+    <div class="buttons">
+      <button id="timeBtn">Показать время</button>
+      <button id="themeBtn">Переключить тему</button>
+    </div>
+
+    <p id="message" style="margin-top:.9rem"></p>
+
+    <footer>Создано — GitHub Pages · Пример</footer>
+  </main>
+
+  <script>
+    const timeBtn = document.getElementById('timeBtn');
+    const themeBtn = document.getElementById('themeBtn');
+    const msg = document.getElementById('message');
+
+    timeBtn.addEventListener('click', () => {
+      const now = new Date();
+      msg.textContent = 'Текущее время: ' + now.toLocaleString();
+    });
+
+    themeBtn.addEventListener('click', () => {
+      const root = document.documentElement;
+      if (root.style.getPropertyValue('--bg') === '#0f1724') {
+        root.style.setProperty('--bg', '#f7f9fc');
+        root.style.setProperty('--card', '#ffffff');
+        root.style.setProperty('--text', '#031022');
+        root.style.setProperty('--accent', '#2563eb');
+        document.body.style.background = 'linear-gradient(180deg,#ffffff 0%, #f1f5f9 100%)';
+      } else {
+        root.style.setProperty('--bg', '#0f1724');
+        root.style.setProperty('--card', '#0b1220');
+        root.style.setProperty('--text', '#e6eef8');
+        root.style.setProperty('--accent', '#7dd3fc');
+        document.body.style.background = 'linear-gradient(180deg,#071029 0%, #0f1724 100%)';
+      }
+    });
+  </script>
+</body>
+</html>
