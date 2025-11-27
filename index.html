@@ -3,96 +3,332 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Тестовый сайт на GitHub Pages</title>
+  <title>Самые безумные технологии Второй Мировой войны</title>
+  <!-- GSAP for tween animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <style>
     :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --accent:#7dd3fc;
-      --text:#e6eef8;
+      --bg1:#0f1724; --bg2:#0b1220; --accent:#7dd3fc; --card:#071029; --text:#e6eef8;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
     }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;color:var(--text)}
+
+    /* animated gradient background */
     body{
-      margin:0;
-      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:linear-gradient(180deg,#071029 0%, var(--bg) 100%);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      padding:2rem;
+      background: linear-gradient(120deg,var(--bg1), #15314b, #2b2f57);
+      background-size: 300% 300%;
+      animation: bgShift 12s ease-in-out infinite;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:18px;
     }
-    .card{
+    @keyframes bgShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    .container{
+      max-width:1100px; margin:0 auto; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04); border-radius:20px; overflow:hidden; display:flex; gap:0; min-height:70vh;
+      box-shadow:0 10px 40px rgba(2,6,23,0.6);
+    }
+
+    /* left column with thumbnails */
+    .left{
+      width:200px; min-width:120px; background:rgba(0,0,0,0.18); padding:14px; display:flex; flex-direction:column; gap:12px; align-items:center;
+    }
+    .thumbs{display:flex; flex-direction:column; gap:10px; width:100%; align-items:center; overflow:auto; padding-right:6px}
+    .thumb{width:100%; cursor:pointer; border-radius:10px; overflow:hidden; border:2px solid transparent; transition:transform .18s ease, border-color .18s ease; background:var(--glass)}
+    .thumb img{display:block; width:100%; height:110px; object-fit:cover}
+    .thumb.active{transform:scale(1.02); border-color:var(--accent)}
+
+    /* controls for uploading/test images */
+    .left .upload{width:100%; display:flex; gap:8px; align-items:center}
+    .left input[type=file]{flex:1}
+
+    /* main content */
+    .main{flex:1; padding:22px; position:relative}
+    header{display:flex; align-items:baseline; gap:14px; margin-bottom:10px}
+    h1{margin:0; font-size:1.3rem}
+    .subtitle{opacity:.85; font-size:.9rem}
+
+    .detail-wrap{position:relative}
+    .detail{
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(125,211,252,0.08);
-      padding:2rem;
-      border-radius:16px;
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
-      max-width:720px;
-      width:100%;
+      border:1px solid rgba(255,255,255,0.04);
+      padding:18px; border-radius:12px; min-height:220px; overflow:hidden; position:relative;
     }
-    h1{margin:0 0 .5rem 0; font-size:1.6rem;}
-    p{margin:.25rem 0;}
-    .buttons{margin-top:1rem; display:flex; gap:.5rem;}
-    button{
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.08);
-      padding:.6rem .9rem;
-      border-radius:10px;
-      color:var(--text);
-      cursor:pointer;
+
+    .meta-title{display:flex; align-items:center; gap:14px}
+    .meta-title h2{margin:0; font-size:1.15rem}
+    .short{margin-top:8px; opacity:.95}
+
+    /* sliding details panel (initially hidden to the right) */
+    .panel{
+      position:absolute; right:-100%; top:0; width:46%; min-width:300px; height:100%; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05)); border-left:1px solid rgba(255,255,255,0.03);
+      padding:20px; box-shadow:-12px 0 30px rgba(2,6,23,0.45);
+      display:flex; flex-direction:column; gap:10px; overflow:auto; border-radius:0 12px 12px 0;
     }
-    footer{margin-top:1.25rem; font-size:.85rem; opacity:.8;}
-    .logo{display:inline-block; vertical-align:middle; margin-right:.5rem; transform:translateY(2px);}
+
+    /* responsive behavior */
+    @media (max-width:900px){
+      .container{flex-direction:column; min-height:60vh}
+      .left{width:100%; min-width:unset; flex-direction:row; padding:10px; overflow:auto}
+      .thumbs{flex-direction:row; gap:8px; padding:0}
+      .thumb{min-width:120px; height:72px}
+      .thumb img{height:72px}
+      .main{padding:14px}
+      .panel{position:fixed; right:0; left:0; bottom:0; top:auto; height:55%; width:100%; border-radius:12px 12px 0 0}
+    }
+
+    /* small niceties */
+    .specs{font-size:.95rem; line-height:1.4}
+    .muted{opacity:.8; font-size:.95rem}
+    .close-btn{margin-left:auto; background:transparent; border:1px solid rgba(255,255,255,0.06); padding:6px 8px; border-radius:8px; cursor:pointer}
+
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1><span class="logo">🚀</span>Тестовый сайт на GitHub Pages</h1>
-    <p>Это простой пример страницы. Чтобы опубликовать — положите этот файл в корень репозитория и включите GitHub Pages.</p>
+  <div class="container" role="application">
+    <nav class="left" aria-label="Галерея">
+      <div style="width:100%; font-weight:600; text-align:center">Изображения</div>
 
-    <p><strong>Что внутри:</strong></p>
-    <ul>
-      <li>HTML + встроенный CSS для стиля</li>
-      <li>Небольшой JavaScript для взаимодействия</li>
-    </ul>
+      <!-- file input lets you preview and add your own images locally before uploading to GitHub -->
+      <div class="upload" title="Можно загрузить локальные изображения для предпросмотра">
+        <input id="fileInput" type="file" accept="image/*" multiple aria-label="Загрузить изображения">
+        <button id="addSample">Добавить тестовые</button>
+      </div>
 
-    <div class="buttons">
-      <button id="timeBtn">Показать время</button>
-      <button id="themeBtn">Переключить тему</button>
-    </div>
+      <div class="thumbs" id="thumbs" role="list">
+        <!-- thumbs are injected by JS -->
+      </div>
+      <div style="font-size:12px; opacity:.8; text-align:center; padding-top:8px">Клик на картинке — показать подробности</div>
+    </nav>
 
-    <p id="message" style="margin-top:.9rem"></p>
+    <main class="main">
+      <header>
+        <h1>Самые безумные технологии Второй Мировой войны</h1>
+        <div class="subtitle">Короткие карточки и расширяемые подробности</div>
+      </header>
 
-    <footer>Создано — GitHub Pages · Пример</footer>
-  </main>
+      <section class="detail-wrap">
+        <div class="detail" id="detail">
+          <div class="meta-title">
+            <h2 id="title">Выберите проект слева</h2>
+            <button id="closePanel" class="close-btn" style="display:none">Закрыть</button>
+          </div>
+          <p id="short" class="short muted">Краткая характеристика появится здесь.</p>
+          <div id="specs" class="specs" style="margin-top:12px"></div>
+        </div>
+
+        <aside class="panel" id="panel" aria-hidden="true">
+          <!-- detailed text will be rendered here and animated using GSAP tween -->
+          <h3 id="panelTitle">Подробности</h3>
+          <div id="panelBody" style="white-space:pre-wrap; font-size:0.95rem; line-height:1.45"></div>
+        </aside>
+      </section>
+
+    </main>
+  </div>
 
   <script>
-    const timeBtn = document.getElementById('timeBtn');
-    const themeBtn = document.getElementById('themeBtn');
-    const msg = document.getElementById('message');
+    // ===== Data =====
+    const items = [
+      {
+        id: 'hubakuk',
+        title: 'Проект «Хабаккук» (Великобритания) — Ледяной Левиафан',
+        short: 'Гигантский авианосец из "пайкерита" (лед + опилки), длиной 600 м. Идея — плавающая авиабаза в Атлантике.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Project_Habbakuk_model.jpg/640px-Project_Habbakuk_model.jpg',
+        detail: `Описание проекта:\nГигантский британский авианосец, построенный из пайкерита — замороженной смеси льда и опилок. Длина — 600 м...\n\nТехнические характеристики:\n• Размеры: 600 м × 90 м; водоизмещение ~1.8 млн т.\n• Материал: пайкерит (14% древесины, 86% воды).\n• Конструкция: холодильные трубки, до 150 истребителей на борту.\n\nИтог: построили маленький прототип; проект закрыли.`
+      },
+      {
+        id: 'a40',
+        title: 'А-40 «Крылья Танка» (СССР) — Летающий Броневик',
+        short: 'Танк Т-60, переоборудованный в планёр — буксируемый к зоне высадки.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/A-40_tank_glider.jpg/640px-A-40_tank_glider.jpg',
+        detail: `Описание проекта:\nСоветский план превращения лёгкого танка в планёр для десантной высадки.\n\nТехнические характеристики:\n• Масса танка: ~5.8 т.\n• Буксировщик: ТБ-3.\n• Процесс: отцепка на малой высоте, посадка, сброс крыльев.`
+      },
+      {
+        id: 'goliath',
+        title: '«Голиаф» (Германия) — Мини-танк Смертник',
+        short: 'Маленькая дистанционно управляемая гусеничная мина с 75–100 кг ВВ, управляемая по кабелю.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Goliath_%28tank%29.jpg/640px-Goliath_%28tank%29.jpg',
+        detail: `Описание проекта:\nНемецкая дистанционно управляемая мина «Голиаф» для разрушения укреплений и техники.\n\nХарактеристики:\n• Длина: ~1.5 м; боёвая часть: 75–100 кг.\n• Управление: кабель до 650 м.`
+      },
+      {
+        id: 'dora',
+        title: '«Дора» и «Густав» (Германия) — Гигантские Пушки',
+        short: 'Железнодорожные пушки калибра 800 мм — одни из самых больших орудий в истории.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Dora_railgun.jpg/640px-Dora_railgun.jpg',
+        detail: `Описание проекта:\nОгромные железнодорожные артсистемы для разрушения укреплений.\n\nТехнические характеристики:\n• Калибр: 800 мм; масса: ~1350 т; снаряды до 7.1 т.`
+      },
+      {
+        id: 'fau3',
+        title: '«Фау-3» (Hochdruckpumpe) — Многоступенчатая Пушка',
+        short: 'Подземная многосекционная пушка, призванная обстреливать лондон с континента.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/KondersWurf.jpg/640px-KondersWurf.jpg',
+        detail: `Описание проекта:\nМногоступенчатая пушка с боковыми каморами, подрывавшимися последовательно для разгона снаряда.\n\nИтог: комплексы были уничтожены до ввода в строй.`
+      },
+      {
+        id: 'batbomb',
+        title: 'Проект «Гадюка» (Bat Bomb) (США) — Биологическое Зажигательное Оружие',
+        short: 'Идея: использовать летучих мышей с прикреплёнными мини-зажигалками для поджога деревянных построек.',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bat_bomb_concept.jpg/640px-Bat_bomb_concept.jpg',
+        detail: `Описание проекта:\nАмериканская программа по использованию летучих мышей как носителей зажигательных устройств.\n\nИтог: испытания привели к побочному пожару; проект отменён.`
+      }
+    ];
 
-    timeBtn.addEventListener('click', () => {
-      const now = new Date();
-      msg.textContent = 'Текущее время: ' + now.toLocaleString();
+    // ===== DOM references =====
+    const thumbs = document.getElementById('thumbs');
+    const titleEl = document.getElementById('title');
+    const shortEl = document.getElementById('short');
+    const specsEl = document.getElementById('specs');
+    const panel = document.getElementById('panel');
+    const panelTitle = document.getElementById('panelTitle');
+    const panelBody = document.getElementById('panelBody');
+    const closeBtn = document.getElementById('closePanel');
+
+    // populate initial thumbs
+    function createThumb(item){
+      const el = document.createElement('div'); el.className='thumb'; el.dataset.id=item.id; el.setAttribute('role','listitem');
+      const img = document.createElement('img'); img.src = item.img; img.alt = item.title;
+      el.appendChild(img);
+      el.addEventListener('click', ()=> onSelect(item.id, el));
+      return el;
+    }
+
+    items.forEach(it=> thumbs.appendChild(createThumb(it)));
+
+    // select default first
+    let activeId = null;
+    function onSelect(id, thumbEl){
+      if(activeId === id){ // toggle panel
+        openPanel(id);
+        return;
+      }
+      activeId = id;
+      // mark active class
+      document.querySelectorAll('.thumb').forEach(t=> t.classList.remove('active'));
+      thumbEl.classList.add('active');
+
+      const item = items.find(x=>x.id===id);
+      titleEl.textContent = item.title;
+      shortEl.textContent = item.short;
+      specsEl.textContent = '';
+
+      // animate a little highlight using GSAP (if available) or fallback to CSS pulse
+      if(window.gsap){
+        gsap.fromTo(thumbEl, {scale:0.98}, {scale:1.02, duration:.25, yoyo:true, repeat:1});
+        gsap.fromTo('#detail', {opacity:0, y:8}, {opacity:1, y:0, duration:.35});
+      }
+
+      // hide panel by default on select
+      hidePanel();
+    }
+
+    // panel open/close animations using GSAP tweening
+    function openPanel(id){
+      const item = items.find(x=>x.id===id);
+      panelTitle.textContent = item.title;
+      panelBody.textContent = item.detail;
+      panel.setAttribute('aria-hidden','false');
+      closeBtn.style.display='inline-block';
+
+      if(window.gsap){
+        // slide in from right (desktop) or from bottom (mobile)
+        const isMobile = window.matchMedia('(max-width:900px)').matches;
+        if(isMobile){
+          gsap.fromTo(panel, {y:'100%'}, {y:'0%', duration:.5, ease:'power3.out'});
+        } else {
+          gsap.fromTo(panel, {x:'100%'}, {x:'0%', duration:.5, ease:'power3.out'});
+        }
+      } else {
+        panel.style.right='0'; panel.style.transition='all .35s ease';
+      }
+    }
+    function hidePanel(){
+      panel.setAttribute('aria-hidden','true');
+      closeBtn.style.display='none';
+      if(window.gsap){
+        const isMobile = window.matchMedia('(max-width:900px)').matches;
+        if(isMobile){
+          gsap.to(panel, {y:'100%', duration:.45, ease:'power3.in'});
+        } else {
+          gsap.to(panel, {x:'100%', duration:.45, ease:'power3.in'});
+        }
+      } else {
+        panel.style.right='-100%';
+      }
+    }
+
+    closeBtn.addEventListener('click', hidePanel);
+
+    // Clicking the thumbnail should show short text and open panel with details
+    // But if user clicks active thumb, open panel
+    thumbs.addEventListener('click', e=>{
+      // handled per-thumb above
     });
 
-    themeBtn.addEventListener('click', () => {
-      const root = document.documentElement;
-      if (root.style.getPropertyValue('--bg') === '#0f1724') {
-        root.style.setProperty('--bg', '#f7f9fc');
-        root.style.setProperty('--card', '#ffffff');
-        root.style.setProperty('--text', '#031022');
-        root.style.setProperty('--accent', '#2563eb');
-        document.body.style.background = 'linear-gradient(180deg,#ffffff 0%, #f1f5f9 100%)';
+    // file input preview (lets user add local images for testing without uploading)
+    const fileInput = document.getElementById('fileInput');
+    fileInput.addEventListener('change', (ev)=>{
+      const files = Array.from(ev.target.files);
+      files.forEach(file=>{
+        const url = URL.createObjectURL(file);
+        const tmp = {id: 'local-'+Math.random().toString(36).slice(2,9), title: file.name, short: 'Локальное изображение (тест)', img: url, detail: 'Загружено локально. Чтобы опубликовать изображение на сайте, добавьте его в папку /assets или /images репозитория и укажите относительный путь.'};
+        thumbs.appendChild(createThumb(tmp));
+      });
+      // clear input
+      fileInput.value='';
+    });
+
+    // add sample images button
+    document.getElementById('addSample').addEventListener('click', ()=>{
+      // if there are already thumbs from items, do nothing; otherwise ensure they exist
+      if(document.querySelectorAll('.thumb').length === 0){
+        items.forEach(it=> thumbs.appendChild(createThumb(it)));
       } else {
-        root.style.setProperty('--bg', '#0f1724');
-        root.style.setProperty('--card', '#0b1220');
-        root.style.setProperty('--text', '#e6eef8');
-        root.style.setProperty('--accent', '#7dd3fc');
-        document.body.style.background = 'linear-gradient(180deg,#071029 0%, #0f1724 100%)';
+        // temporarily pulse the first one
+        const first = document.querySelector('.thumb');
+        if(first && window.gsap) gsap.fromTo(first,{scale:.98},{scale:1.02,duration:.25,yoyo:true,repeat:1});
       }
     });
+
+    // keyboard accessibility: open panel with Enter on focused thumb
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('thumb')){
+        const id = document.activeElement.dataset.id;
+        openPanel(id);
+      }
+    });
+
+    // small helper: make thumb focusable
+    setTimeout(()=>{
+      document.querySelectorAll('.thumb').forEach(t=> t.setAttribute('tabindex','0'));
+    }, 80);
+
+    // initial select first item for convenience
+    setTimeout(()=>{
+      const firstThumb = document.querySelector('.thumb');
+      if(firstThumb){ firstThumb.click(); }
+    }, 200);
+
+    /*
+      === Как загрузить карты/изображения в репозиторий (инструкция для GitHub Pages) ===
+      1) В репозитории создай папку (например) `assets` или `images` в корне.
+      2) В GitHub: зайди в репозиторий → Add file → Upload files, перетащи туда свои картинки и Commit.
+      3) В HTML используй относительные ссылки: <img src="/images/habbakuk.jpg"> или "images/habbakuk.jpg".
+      4) Закоммить index.html в ветку main и включи Pages (Settings → Pages → Source: main / (root)).
+
+      Альтернативно можно загружать через Git локально:
+      git add images/* && git commit -m "Add images" && git push
+
+      Примечание: браузер при открытии GitHub Pages будет подставлять путь к файлам относительно корня сайта.
+    */
+
   </script>
 </body>
 </html>
